@@ -1,7 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 
 import { client } from "@/lib/rpc";
+import { useRouter } from "next/navigation";
+import { useId } from "react";
+import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
   (typeof client.api.auth.register)["$post"]
@@ -9,10 +12,24 @@ type ResponseType = InferResponseType<
 type RequestType = InferRequestType<(typeof client.api.auth.register)["$post"]>;
 
 export const useRegister = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const toastId = useId();
+
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
+      toast.loading("Creating Account....", { id: toastId });
       const response = await client.api.auth.register["$post"]({ json });
       return await response.json();
+    },
+    onSuccess: () => {
+      toast.success("Account Created Successfully!", { id: toastId });
+      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ["current"] });
+    },
+    onError(error, variables, context) {
+      toast.error("Email Already Exist!", { id: toastId });
     },
   });
 

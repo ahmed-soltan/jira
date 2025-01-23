@@ -3,20 +3,26 @@ import { zValidator } from "@hono/zod-validator";
 import { ID } from "node-appwrite";
 import { deleteCookie, setCookie } from "hono/cookie";
 
-import { createAdminClient } from "@/lib/appwrite";
+import { loginSchema, registerSchema } from "@/features/auth/schemas";
 
-import { loginSchema, registerSchema } from "@/features/schemas";
+import { createAdminClient } from "@/lib/appwrite";
+import { sessionMiddleware } from "@/lib/session-middleware";
 
 import { AUTH_COOKIE } from "../constants";
 
+
 const app = new Hono()
+  .get("/current", sessionMiddleware, (c) => {
+    const user = c.get("user");
+    return c.json({ data: user });
+  })
   .post("/login", zValidator("json", loginSchema), async (c) => {
     const { email, password } = c.req.valid("json");
     const { account } = await createAdminClient();
 
     const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(c, AUTH_COOKIE, `${session.secret}${session.$id}${session.userId}`, {
+    setCookie(c, AUTH_COOKIE, session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
@@ -31,24 +37,27 @@ const app = new Hono()
 
     const { account } = await createAdminClient();
 
-    const user = await account.create(ID.unique(), email, password, name);
+    await account.create(ID.unique(), email, password, name);
 
     const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(c, AUTH_COOKIE, `${session.secret}${session.$id}${session.userId}`, {
+    setCookie(c, AUTH_COOKIE, session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
       secure: true,
-      maxAge: 60 * 60 * 24 * 30,
     });
 
     return c.json({ success: true });
   })
-  .post("/logout" , async(c)=>{
+  .post("/logout", sessionMiddleware, async (c) => {
+    const account = c.get("account");
+
     deleteCookie(c, AUTH_COOKIE);
 
+    await account.deleteSession("current");
+
     return c.json({ success: true });
-  })
+  });
 
 export default app;

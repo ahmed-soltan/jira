@@ -1,12 +1,16 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Loader } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import Link from "next/link";
 
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -14,7 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -22,11 +25,13 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { registerSchema } from "@/features/schemas";
+
+import { registerSchema } from "@/features/auth/schemas";
+
 import { useRegister } from "../api/use-register";
 
 export const SignUpCard = () => {
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -111,8 +116,13 @@ export const SignUpCard = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={false} size={"lg"} className="w-full">
-              Sign up
+            <Button
+              disabled={isPending}
+              size={"lg"}
+              className="w-full flex items-center gap-2"
+            >
+              {isPending && <Loader className="w-5 h-5 animate-spin" />}
+              Sign Up
             </Button>
           </form>
         </Form>
@@ -125,7 +135,7 @@ export const SignUpCard = () => {
           variant={"secondary"}
           size={"lg"}
           className="w-full"
-          disabled={false}
+          disabled={isPending}
         >
           <FcGoogle className="mr-2 size-5" />
           Sign Up With Google
@@ -134,7 +144,7 @@ export const SignUpCard = () => {
           variant={"secondary"}
           size={"lg"}
           className="w-full"
-          disabled={false}
+          disabled={isPending}
         >
           <FaGithub className="mr-2 size-5" />
           Sign Up With Github
