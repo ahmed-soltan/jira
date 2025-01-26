@@ -31,6 +31,7 @@ export const getWorkspaces = async () => {
 
     return workspaces;
   } catch (error) {
+    console.log(error)
     return { documents: [], total: 0 };
   }
 };
@@ -61,6 +62,7 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspace) => {
 
     return workspace;
   } catch (error) {
+    console.log(error)
     return null;
   }
 };
@@ -79,6 +81,7 @@ export const getWorkspaceInfo = async ({ workspaceId }: GetWorkspace) => {
       name:workspace.name,
     };
   } catch (error) {
+    console.log(error)
     return null;
   }
 };

@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useId } from "react";
-import axios from "axios";
 
 export const useCreateWorkspace = () => {
   const queryClient = useQueryClient();

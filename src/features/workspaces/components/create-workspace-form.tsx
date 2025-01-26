@@ -5,6 +5,7 @@ import { z } from "zod";
 import { ImageIcon, Loader } from "lucide-react";
 import { ChangeEvent, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +24,6 @@ import { useCreateWorkspace } from "../api/use-create-workspace";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { createWorkspaceSchema } from "../schemas";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface CreateWorkspaceFormProps {

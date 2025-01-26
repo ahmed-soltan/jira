@@ -11,10 +11,6 @@ type ResponseType = InferResponseType<
   200
 >;
 
-type RequestType = InferRequestType<
-  (typeof client.api.workspaces)[":workspaceId"]["$patch"]
->;
-
 export const useUpdateWorkspace = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
