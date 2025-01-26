@@ -4,6 +4,7 @@ import React from "react";
 
 import { DottedSeparator } from "./dotted-separator";
 import { Navigation } from "./navigation";
+import { WorkspaceSwitcher } from "./workspace-switcher";
 
 export const Sidebar = () => {
   return (
@@ -11,6 +12,8 @@ export const Sidebar = () => {
       <Link href={"/"}>
         <Image src={"/logo.svg"} alt="logo" width={164} height={48} />
       </Link>
+      <DottedSeparator className="my-4" />
+      <WorkspaceSwitcher />
       <DottedSeparator className="my-4" />
       <Navigation />
     </aside>

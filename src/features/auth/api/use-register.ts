@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
-
-import { client } from "@/lib/rpc";
 import { useRouter } from "next/navigation";
 import { useId } from "react";
 import { toast } from "sonner";
+
+import { client } from "@/lib/rpc";
 
 type ResponseType = InferResponseType<
   (typeof client.api.auth.register)["$post"]
@@ -28,7 +28,7 @@ export const useRegister = () => {
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["current"] });
     },
-    onError(error, variables, context) {
+    onError() {
       toast.error("Email Already Exist!", { id: toastId });
     },
   });

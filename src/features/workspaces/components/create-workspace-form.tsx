@@ -23,6 +23,8 @@ import { useCreateWorkspace } from "../api/use-create-workspace";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { createWorkspaceSchema } from "../schemas";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
@@ -37,35 +39,37 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       name: "",
     },
   });
+  const router = useRouter();
 
   const onSubmit = (values: z.infer<typeof createWorkspaceSchema>) => {
     const formData = new FormData();
-    formData.append("name", values.name); 
-    
+    formData.append("name", values.name);
+
     if (values.image instanceof File) {
       formData.append("image", values.image);
-    } else {
-      console.error("Image is not a File:", values.image);
     }
-    
-    mutate({ form: formData } , {
-      onSuccess: (response) => {
-        form.reset()
-      },
-    });
+
+    mutate(
+      { form: formData },
+      {
+        onSuccess: ({ data }) => {
+          form.reset();
+          router.push(`/workspaces/${data.$id}`);
+        },
+      }
+    );
   };
-  
+
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e?.target?.files?.[0];
-  
+
     if (file) {
-      console.log("Selected File:", file.name, file.type, file.size);
       form.setValue("image", file);
     } else {
       console.error("No file selected");
     }
   };
-  
+
   return (
     <Card className="w-full h-full border-none shadow-none">
       <CardHeader className="flex p-7">
@@ -137,16 +141,34 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                           disabled={isPending}
                           onChange={handleImageChange}
                         />
-                        <Button
-                          variant={"tertiary"}
-                          size={"xs"}
-                          type="button"
-                          disabled={isPending}
-                          className="w-fit mt-2"
-                          onClick={() => inputRef?.current?.click()}
-                        >
-                          Upload Image
-                        </Button>
+                        {!field.value ? (
+                          <Button
+                            variant={"tertiary"}
+                            size={"xs"}
+                            type="button"
+                            disabled={isPending}
+                            className="w-fit mt-2"
+                            onClick={() => inputRef?.current?.click()}
+                          >
+                            Upload Image
+                          </Button>
+                        ) : (
+                          <Button
+                            variant={"destructive"}
+                            size={"xs"}
+                            type="button"
+                            disabled={isPending}
+                            className="w-fit mt-2"
+                            onClick={() => {
+                              field.onChange(null);
+                              if (inputRef.current) {
+                                inputRef.current.value = "";
+                              }
+                            }}
+                          >
+                            Remove Image
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -161,7 +183,10 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
                 onClick={onCancel}
                 variant={"secondary"}
                 disabled={isPending}
-                className="w-full md:max-w-[150px]"
+                className={cn(
+                  "w-full md:max-w-[150px]",
+                  onCancel ? "block" : "invisible"
+                )}
               >
                 Cancel
               </Button>
