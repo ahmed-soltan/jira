@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useId } from "react";
 import { useRouter } from "next/navigation";
-import { InferRequestType, InferResponseType } from "hono";
+import { InferResponseType } from "hono";
+
 import { client } from "@/lib/rpc";
-import axios from "axios";
 
 type ResponseType = InferResponseType<
   (typeof client.api.workspaces)[":workspaceId"]["$patch"],

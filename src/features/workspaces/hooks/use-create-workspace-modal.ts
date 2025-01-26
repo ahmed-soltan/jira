@@ -1,4 +1,4 @@
-import { useQueryState, parseAsBoolean, useQueryStates } from "nuqs";
+import { useQueryState, parseAsBoolean } from "nuqs";
 
 export const useCreateWorkspaceModel = () => {
   const [isOpen, setIsOpen] = useQueryState(
