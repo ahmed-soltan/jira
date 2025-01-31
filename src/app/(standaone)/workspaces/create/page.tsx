@@ -1,7 +1,9 @@
+export const dynamic = "force-static";
+
+import { redirect } from "next/navigation";
+
 import { getCurrent } from "@/features/auth/queries";
 import { CreateWorkspaceForm } from "@/features/workspaces/components/create-workspace-form";
-import { redirect } from "next/navigation";
-import React from "react";
 
 const CreateWorkspacePage = async () => {
   const user = await getCurrent();

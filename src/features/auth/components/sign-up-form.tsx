@@ -1,7 +1,7 @@
 "use client";
 
-import z from "zod";
 import Link from "next/link";
+import { z } from "zod";
 import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
@@ -10,8 +10,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -20,39 +26,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { loginSchema } from "@/features/auth/schemas";
+import { registerSchema } from "@/features/auth/schemas";
 
-import { useLogin } from "../api/use-login";
-import { useOrigin } from "@/hooks/use-origin";
-import { useRouter } from "next/navigation";
+import { useRegister } from "../api/use-register";
 
-export const SignInCard = () => {
-  const { origin } = useOrigin();
-  const router = useRouter();
-  const { mutate, isPending } = useLogin();
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
+
+
+export const SignUpForm = () => {
+  const { mutate, isPending } = useRegister();
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof loginSchema>) => {
-    mutate(
-      { json: data },
-      {
-        onSuccess: () => {
-          router.push(origin);
-        },
-      }
-    );
+  const onSubmit = (data: z.infer<typeof registerSchema>) => {
+    mutate({ json: data });
   };
-
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
       <CardHeader className="flex items-center justify-center text-center p-7">
-        <CardTitle className="text-2xl">Welcome Back!</CardTitle>
+        <CardTitle className="text-2xl">Sign Up</CardTitle>
+        <CardDescription>
+          By Signing up, You Agree to Our{" "}
+          <Link href={"#"}>
+            <span className="text-blue-700">Privacy Policy</span>
+          </Link>{" "}
+          and{" "}
+          <Link href={"#"}>
+            <span className="text-blue-700">Terms of Service</span>
+          </Link>
+        </CardDescription>
       </CardHeader>
       <div className="px-7">
         <DottedSeparator />
@@ -60,6 +68,22 @@ export const SignInCard = () => {
       <CardContent className="p-7">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              name="name"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter Your Name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               name="email"
               control={form.control}
@@ -101,7 +125,7 @@ export const SignInCard = () => {
               className="w-full flex items-center gap-2"
             >
               {isPending && <Loader className="w-5 h-5 animate-spin" />}
-              Login
+              Sign Up
             </Button>
           </form>
         </Form>
@@ -115,27 +139,29 @@ export const SignInCard = () => {
           size={"lg"}
           className="w-full"
           disabled={isPending}
+          onClick={()=>signUpWithGoogle()}
         >
           <FcGoogle className="mr-2 size-5" />
-          Login With Google
+          Sign Up With Google
         </Button>
         <Button
           variant={"secondary"}
           size={"lg"}
           className="w-full"
           disabled={isPending}
+          onClick={()=>signUpWithGithub()}
         >
           <FaGithub className="mr-2 size-5" />
-          Login With Github
+          Sign Up With Github
         </Button>
       </CardContent>
       <div className="px-7">
         <DottedSeparator />
       </div>
       <CardContent className="p-7 flex items-center justify-center">
-        Don&apos;t Have an Account?{" "}
-        <Link href={"/sign-up"}>
-          <span className="text-blue-700">&nbsp;Sign Up</span>
+        Already Have an Account?{" "}
+        <Link href={"/sign-in"}>
+          <span className="text-blue-700">&nbsp;Sign In</span>
         </Link>
       </CardContent>
     </Card>
