@@ -130,7 +130,7 @@ export const CreateTaskForm = ({
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
-                        {memberOptions.map((member) => (
+                        {memberOptions && memberOptions?.map((member) => (
                           <SelectItem key={member.id} value={member.id}>
                             <div className="flex items-center gap-x-2">
                               <MemberAvatar name={member.name} />
@@ -195,7 +195,7 @@ export const CreateTaskForm = ({
                       </FormControl>
                       <FormMessage />
                       <SelectContent>
-                        {projectOptions.map((project) => (
+                        {projectOptions && projectOptions?.map((project) => (
                           <SelectItem key={project.id} value={project.id}>
                             <div className="flex items-center gap-x-2">
                               <ProjectAvatar
