@@ -137,7 +137,7 @@ export const SignInForm = () => {
       </div>
       <CardContent className="p-7 flex items-center justify-center">
         Don&apos;t Have an Account?{" "}
-        <Link href={"/sign-up"}>
+        <Link href={"/sign-up-page"}>
           <span className="text-blue-700">&nbsp;Sign Up</span>
         </Link>
       </CardContent>

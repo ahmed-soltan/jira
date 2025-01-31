@@ -160,7 +160,7 @@ export const SignUpForm = () => {
       </div>
       <CardContent className="p-7 flex items-center justify-center">
         Already Have an Account?{" "}
-        <Link href={"/sign-in"}>
+        <Link href={"/sign-in-page"}>
           <span className="text-blue-700">&nbsp;Sign In</span>
         </Link>
       </CardContent>

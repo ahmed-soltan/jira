@@ -12,7 +12,7 @@ interface TasksPageProps {
 const TasksPage = async ({ params }: TasksPageProps) => {
   const user = await getCurrent();
   if (!user) {
-    redirect(`/sign-in?origin=workspaces/${params.workspaceId}/tasks`);
+    redirect(`/sign-in-page?origin=workspaces/${params.workspaceId}/tasks`);
   }
 
   return (

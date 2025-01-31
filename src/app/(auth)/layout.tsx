@@ -21,8 +21,8 @@ const AuthLayout = ({ children }: AuthProps) => {
             <Image src={"/logo.svg"} alt="logo" width={152} height={56} />
           </div>
           <Button asChild variant={"secondary"}>
-            <Link href={pathname === "/sign-in" ? "/sign-up" : "/sign-in"}>
-              {pathname === "/sign-in" ? "Sign Up" : "Login"}
+            <Link href={pathname === "/sign-in-page" ? "/sign-up-page" : "/sign-in-page"}>
+              {pathname === "/sign-in-page" ? "Sign Up" : "Login"}
             </Link>
           </Button>
         </nav>

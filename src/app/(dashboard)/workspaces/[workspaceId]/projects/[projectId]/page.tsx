@@ -16,7 +16,7 @@ const ProjectIdPage = async ({ params }: ProjectIdPageProps) => {
 
   if (!user) {
     redirect(
-      `/sign-in?origin=workspaces/${params.workspaceId}/projects/${params.projectId}`
+      `/sign-in-page?origin=workspaces/${params.workspaceId}/projects/${params.projectId}`
     );
   }
 

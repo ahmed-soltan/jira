@@ -7,7 +7,7 @@ const MembersPage = async () => {
   const user = await getCurrent();
 
   if (!user) {
-    return redirect("/sign-in");
+    return redirect("/sign-in-page");
   }
 
   return (

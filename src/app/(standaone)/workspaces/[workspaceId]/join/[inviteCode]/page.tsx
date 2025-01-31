@@ -18,7 +18,7 @@ const WorkspaceIdJoinPage = async ({ params }: WorkspaceIdJoinPageProps) => {
   
   if (!user) {
     redirect(
-      `/sign-in?origin=workspaces/${params.workspaceId}/join/${params.inviteCode}`
+      `/sign-in-page?origin=workspaces/${params.workspaceId}/join/${params.inviteCode}`
     );
   }
   
