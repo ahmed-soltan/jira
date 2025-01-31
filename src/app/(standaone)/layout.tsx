@@ -1,7 +1,7 @@
-import { UserButton } from "@/features/auth/components/user-button";
-import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import Image from "next/image";
+
+import { UserButton } from "@/features/auth/components/user-button";
 
 const StandaloneLayout = ({
   children,

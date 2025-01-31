@@ -1,12 +1,12 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { z } from "zod";
 import { Loader } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";

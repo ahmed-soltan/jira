@@ -83,7 +83,7 @@ export const EditWorkspaceForm = ({
       { param: { workspaceId: initialValues.$id } },
       {
         onSuccess: () => {
-          router.refresh()
+          router.refresh();
         },
       }
     );
@@ -97,24 +97,16 @@ export const EditWorkspaceForm = ({
       formData.append("image", values.image);
     }
 
-    updateWorkspaceMutation(
-      { form: formData, param: { workspaceId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          form.reset();
-          router.push(`/workspaces/${initialValues.$id}`);
-        },
-      }
-    );
+    updateWorkspaceMutation({
+      form: formData,
+      param: { workspaceId: initialValues.$id },
+    });
   };
-
-
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e?.target?.files?.[0];
 
     if (file) {
-      console.log("Selected File:", file.name, file.type, file.size);
       form.setValue("image", file);
     } else {
       console.error("No file selected");

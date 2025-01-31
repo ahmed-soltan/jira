@@ -1,7 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { useId } from "react";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferResponseType } from "hono";
 
 import { client } from "@/lib/rpc";
@@ -12,7 +11,6 @@ type ResponseType = InferResponseType<
 >;
 
 export const useUpdateWorkspace = () => {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const toastId = useId();
 
@@ -38,7 +36,6 @@ export const useUpdateWorkspace = () => {
     },
     onSuccess: ({ data }) => {
       toast.success("Workspace Updated Successfully!", { id: toastId });
-      router.refresh();
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
       queryClient.invalidateQueries({ queryKey: ["workspace", data.$id] });
     },

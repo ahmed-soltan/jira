@@ -1,12 +1,12 @@
 "use client";
 
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
-import { Loader } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import Link from "next/link";
+import { Loader } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,12 @@ import {
 import { loginSchema } from "@/features/auth/schemas";
 
 import { useLogin } from "../api/use-login";
+import { useOrigin } from "@/hooks/use-origin";
+import { useRouter } from "next/navigation";
 
 export const SignInCard = () => {
+  const { origin } = useOrigin();
+  const router = useRouter();
   const { mutate, isPending } = useLogin();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -35,7 +39,14 @@ export const SignInCard = () => {
   });
 
   const onSubmit = (data: z.infer<typeof loginSchema>) => {
-    mutate({ json: data });
+    mutate(
+      { json: data },
+      {
+        onSuccess: () => {
+          router.push(origin);
+        },
+      }
+    );
   };
 
   return (

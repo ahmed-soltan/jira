@@ -41,7 +41,6 @@ interface GetWorkspace {
 }
 
 export const getWorkspace = async ({ workspaceId }: GetWorkspace) => {
-  try {
     const { account, databases } = await createSessionClient();
 
     const user = await account.get();
@@ -52,7 +51,9 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspace) => {
       userId: user.$id,
     });
 
-    if (!member) return null;
+    if (!member){
+      throw new Error("Unauthorized")
+    };
 
     const workspace = await databases.getDocument<Workspace>(
       DATABASE_ID,
@@ -61,10 +62,6 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspace) => {
     );
 
     return workspace;
-  } catch (error) {
-    console.log(error)
-    return null;
-  }
 };
 
 export const getWorkspaceInfo = async ({ workspaceId }: GetWorkspace) => {
@@ -77,8 +74,11 @@ export const getWorkspaceInfo = async ({ workspaceId }: GetWorkspace) => {
       workspaceId
     );
 
+     
+
     return {
       name:workspace.name,
+      userId:workspace.userId,
     };
   } catch (error) {
     console.log(error)
