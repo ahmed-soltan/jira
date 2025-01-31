@@ -1,5 +1,3 @@
-export const dynamic = "force-static";
-
 import { redirect } from "next/navigation";
 
 import { getCurrent } from "@/features/auth/queries";
