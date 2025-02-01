@@ -9,6 +9,9 @@ export const useGetProject = ({ projectId }: { projectId: string }) => {
         param: { projectId },
       });
 
+      console.log(response)
+
+
       if (!response.ok) {
         return null;
       }

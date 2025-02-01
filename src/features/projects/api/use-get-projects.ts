@@ -9,6 +9,9 @@ export const useGetProjects = ({ workspaceId }: { workspaceId: string }) => {
         query: { workspaceId },
       });
 
+      console.log(response)
+
+
       if (!response.ok) {
         return null;
       }

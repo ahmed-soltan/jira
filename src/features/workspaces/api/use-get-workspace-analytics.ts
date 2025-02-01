@@ -8,12 +8,12 @@ export const useGetWorkspaceAnalytics = ({ workspaceId }: { workspaceId: string 
       const response = await client.api.workspaces[":workspaceId"]["analytics"]["$get"]({
         param: { workspaceId },
       });
+      console.log(response)
 
       if (!response.ok) {
         return null;
       }
 
-      console.log(response)
 
       const { data } = await response.json();
 

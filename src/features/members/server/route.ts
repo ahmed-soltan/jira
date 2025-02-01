@@ -1,13 +1,13 @@
-import { zValidator } from "@hono/zod-validator";
-import { Hono } from "hono";
 import { z } from "zod";
-
-import { createAdminClient } from "@/lib/appwrite";
-import { sessionMiddleware } from "@/lib/session-middleware";
-import { getMember } from "../utils";
-import { DATABASE_ID, MEMBERS_ID } from "@/config";
+import { Hono } from "hono";
 import { Query } from "node-appwrite";
+import { zValidator } from "@hono/zod-validator";
+
+import { getMember } from "../utils";
 import { Member, MemberRole } from "../types";
+import { createAdminClient } from "@/lib/appwrite";
+import { DATABASE_ID, MEMBERS_ID } from "@/config";
+import { sessionMiddleware } from "@/lib/session-middleware";
 
 const app = new Hono()
   .get(
@@ -18,6 +18,7 @@ const app = new Hono()
       const { users } = await createAdminClient();
       const databases = c.get("databases");
       const user = c.get("user");
+
       const { workspaceId } = c.req.valid("query");
 
       const member = await getMember({
