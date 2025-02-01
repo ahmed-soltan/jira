@@ -15,8 +15,6 @@ export const useGetProjectAnalytics = ({
         param: { projectId },
       });
 
-      console.log(response);
-
       if (!response.ok) {
         return null;
       }
