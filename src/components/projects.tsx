@@ -6,7 +6,7 @@ import { RiAddCircleFill } from "react-icons/ri";
 
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
-import { useCreateProjectModel } from "@/features/projects/hooks/use-create-project-modal";
+import { useCreateProjectModal } from "@/features/projects/hooks/use-create-project-modal";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ const Projects = () => {
   const pathname = usePathname();
   const workspaceId = useWorkspaceId();
   const { data } = useGetProjects({ workspaceId });
-  const { open } = useCreateProjectModel();
+  const { open } = useCreateProjectModal();
 
   return (
     <div className="flex flex-col gap-y-2">
