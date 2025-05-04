@@ -394,22 +394,22 @@ const app = new Hono()
       },
     });
   })
-  .get("/repos", sessionMiddleware, async (c) => {
-    try {
-      const octokit = new Octokit({
-        auth: GITHUB_TOKEN,
-      });
+  // .get("/repos", sessionMiddleware, async (c) => {
+  //   try {
+  //     const octokit = new Octokit({
+  //       auth: GITHUB_TOKEN,
+  //     });
 
-      const {data} = await octokit.request('GET /user/repos', {
-        visibility: 'all', 
-        affiliation: 'owner', 
-        per_page: 100, 
-      });
+  //     const {data} = await octokit.request('GET /user/repos', {
+  //       visibility: 'all', 
+  //       affiliation: 'owner', 
+  //       per_page: 100, 
+  //     });
   
 
-      return c.json({ data });
-    } catch (error) {
-      console.error(error);
-    }
-  });
+  //     return c.json({ data });
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // });
 export default app;
