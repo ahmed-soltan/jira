@@ -6,7 +6,7 @@ import { useGetTasks } from "@/features/tasks/api/use-get-tasks";
 import { useGetWorkspaceAnalytics } from "@/features/workspaces/api/use-get-workspace-analytics";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { useCreateTaskModel } from "@/features/tasks/hooks/use-create-task-modal";
-import { useCreateProjectModel } from "@/features/projects/hooks/use-create-project-modal";
+import { useCreateProjectModal } from "@/features/projects/hooks/use-create-project-modal";
 import { PageLoader } from "@/components/page-loader";
 import { PageError } from "@/components/page-error";
 import { Analytics } from "@/components/analytics";
@@ -126,7 +126,7 @@ interface ProjectsListProps {
 
 export const ProjectsList = ({ data, total }: ProjectsListProps) => {
   const workspaceId = useWorkspaceId();
-  const { open: createProject } = useCreateProjectModel();
+  const { open: createProject } = useCreateProjectModal();
 
   return (
     <div className="flex flex-col gap-y-4 col-span-1">
