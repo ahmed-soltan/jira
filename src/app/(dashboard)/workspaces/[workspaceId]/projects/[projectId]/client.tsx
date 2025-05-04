@@ -14,6 +14,7 @@ import { TaskViewSwitcher } from "@/features/tasks/components/task-view-switcher
 import { useProjectId } from "@/features/projects/hooks/use-project-id";
 import { useGetProject } from "@/features/projects/api/use-get-project";
 import { useGetProjectAnalytics } from "@/features/projects/api/use-get-project-analytics";
+import ProjectGithubRepo from "@/features/projects/components/project-github-repo";
 
 export const ProjectIdClient = () => {
   const projectId = useProjectId();
@@ -21,7 +22,7 @@ export const ProjectIdClient = () => {
     projectId,
   });
   const { data: analytics, isLoading: isLoadingAnalytics } =
-  useGetProjectAnalytics({ projectId });
+    useGetProjectAnalytics({ projectId });
 
   if (isLoadingProject || isLoadingAnalytics) {
     return <PageLoader />;
@@ -54,6 +55,7 @@ export const ProjectIdClient = () => {
         </div>
       </div>
       {analytics && <Analytics data={analytics} />}
+      <ProjectGithubRepo />
       <TaskViewSwitcher hideProjectFilter />
     </div>
   );

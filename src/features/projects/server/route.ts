@@ -2,11 +2,12 @@ import { z } from "zod";
 import { Hono } from "hono";
 import { ID, Query } from "node-appwrite";
 import { zValidator } from "@hono/zod-validator";
+import { Octokit } from "@octokit/core";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 
 import { getMember } from "@/features/members/utils";
 import { sessionMiddleware } from "@/lib/session-middleware";
-import { DATABASE_ID, IMAGES_BUCKET_ID, PROJECTS_ID, TASKS_ID } from "@/config";
+import { DATABASE_ID, GITHUB_TOKEN, IMAGES_BUCKET_ID, PROJECTS_ID, TASKS_ID } from "@/config";
 
 import { Project } from "../type";
 import { TaskStatus } from "@/features/tasks/types";
@@ -392,6 +393,23 @@ const app = new Hono()
         overdueTaskDifference,
       },
     });
-  });
+  })
+  .get("/repos", sessionMiddleware, async (c) => {
+    try {
+      const octokit = new Octokit({
+        auth: GITHUB_TOKEN,
+      });
 
+      const {data} = await octokit.request('GET /user/repos', {
+        visibility: 'all', 
+        affiliation: 'owner', 
+        per_page: 100, 
+      });
+  
+
+      return c.json({ data });
+    } catch (error) {
+      console.error(error);
+    }
+  });
 export default app;
