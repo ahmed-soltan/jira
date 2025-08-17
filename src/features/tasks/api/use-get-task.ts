@@ -17,8 +17,6 @@ export const useGetTask = ({ taskId }: UeGetTaskProps) => {
         return null;
       }
 
-      console.log(response)
-
       const { data } = await response.json();
 
       return data;

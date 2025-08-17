@@ -47,9 +47,6 @@ export const WorkspaceIdClient = () => {
     return <PageLoader />;
   }
 
-  console.log(workspaceId);
-  console.log(analytics, members, tasks, projects);
-
   if (!analytics || !members || !tasks || !projects) {
     return <PageError message="Failed To Load Data" />;
   }
@@ -74,9 +71,6 @@ interface TaskListProps {
 export const TaskList = ({ data, total }: TaskListProps) => {
   const workspaceId = useWorkspaceId();
   const { open: createTask } = useCreateTaskModel();
-
-
-  console.log(data)
 
   return (
     <div className="flex flex-col gap-y-4 col-span-1">
