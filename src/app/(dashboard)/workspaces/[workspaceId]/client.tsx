@@ -1,5 +1,9 @@
 "use client";
 
+import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
+import { CalendarIcon, PlusIcon, Settings } from "lucide-react";
+
 import { useGetMembers } from "@/features/members/api/use-get-members";
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { useGetTasks } from "@/features/tasks/api/use-get-tasks";
@@ -12,11 +16,8 @@ import { PageError } from "@/components/page-error";
 import { Analytics } from "@/components/analytics";
 import { Task } from "@/features/tasks/types";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, PlusIcon, Settings } from "lucide-react";
 import { DottedSeparator } from "@/components/dotted-separator";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatDistanceToNow } from "date-fns";
 import { Project } from "@/features/projects/type";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { Member } from "@/features/members/types";
@@ -46,6 +47,9 @@ export const WorkspaceIdClient = () => {
     return <PageLoader />;
   }
 
+  console.log(workspaceId);
+  console.log(analytics, members, tasks, projects);
+
   if (!analytics || !members || !tasks || !projects) {
     return <PageError message="Failed To Load Data" />;
   }
@@ -70,6 +74,9 @@ interface TaskListProps {
 export const TaskList = ({ data, total }: TaskListProps) => {
   const workspaceId = useWorkspaceId();
   const { open: createTask } = useCreateTaskModel();
+
+
+  console.log(data)
 
   return (
     <div className="flex flex-col gap-y-4 col-span-1">
