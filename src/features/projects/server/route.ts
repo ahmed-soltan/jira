@@ -6,7 +6,7 @@ import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 
 import { getMember } from "@/features/members/utils";
 import { sessionMiddleware } from "@/lib/session-middleware";
-import { DATABASE_ID, IMAGES_BUCKET_ID, PROJECTS_ID, TASKS_ID } from "@/config";
+import { DATABASE_ID, PROJECTS_ID, TASKS_ID } from "@/config";
 
 import { Project } from "../type";
 import { TaskStatus } from "@/features/tasks/types";
@@ -44,13 +44,11 @@ const app = new Hono()
   .post("/", sessionMiddleware, async (c) => {
     try {
       const databases = c.get("databases");
-      const storage = c.get("storage");
       const user = c.get("user");
 
       const formData = await c.req.formData();
       const name = formData.get("name") as string;
       const workspaceId = formData.get("workspaceId") as string;
-      const imageBlob = formData.get("image") as Blob;
 
       const member = await getMember({
         databases,
@@ -62,37 +60,12 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      let uploadedImageUrl: string | undefined;
-      if (imageBlob) {
-        const image = new File([imageBlob], "uploaded-image.jpg", {
-          type: imageBlob.type,
-        });
-
-        const uploadedFile = await storage.createFile(
-          IMAGES_BUCKET_ID,
-          ID.unique(),
-          image
-        );
-
-        const arrayBuffer = await storage.getFilePreview(
-          IMAGES_BUCKET_ID,
-          uploadedFile.$id
-        );
-
-        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
-          arrayBuffer
-        ).toString("base64")}`;
-      } else {
-        uploadedImageUrl = imageBlob;
-      }
-
       const project = await databases.createDocument(
         DATABASE_ID,
         PROJECTS_ID,
         ID.unique(),
         {
           name,
-          imageUrl: uploadedImageUrl,
           workspaceId,
         }
       );
@@ -106,12 +79,10 @@ const app = new Hono()
   .patch("/:projectId", sessionMiddleware, async (c) => {
     try {
       const databases = c.get("databases");
-      const storage = c.get("storage");
       const user = c.get("user");
 
       const formData = await c.req.formData();
       const name = formData.get("name") as string;
-      const imageBlob = formData.get("image") as Blob;
 
       const { projectId } = c.req.param();
 
@@ -131,37 +102,12 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      let uploadedImageUrl: string | undefined;
-      if (imageBlob) {
-        const image = new File([imageBlob], "uploaded-image.jpg", {
-          type: imageBlob.type,
-        });
-
-        const uploadedFile = await storage.createFile(
-          IMAGES_BUCKET_ID,
-          ID.unique(),
-          image
-        );
-
-        const arrayBuffer = await storage.getFilePreview(
-          IMAGES_BUCKET_ID,
-          uploadedFile.$id
-        );
-
-        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
-          arrayBuffer
-        ).toString("base64")}`;
-      } else {
-        uploadedImageUrl = imageBlob;
-      }
-
       const project = await databases.updateDocument(
         DATABASE_ID,
         PROJECTS_ID,
         projectId,
         {
           name,
-          imageUrl: uploadedImageUrl,
         }
       );
 

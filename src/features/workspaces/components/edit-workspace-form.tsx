@@ -2,12 +2,11 @@
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ArrowLeft, CopyIcon, ImageIcon, Loader } from "lucide-react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ArrowLeft, CopyIcon, Loader } from "lucide-react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import Image from "next/image";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/dotted-separator";
@@ -21,7 +20,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ConfirmModal } from "@/components/confirm-modal";
 
 import { updateWorkspaceSchema } from "../schemas";
@@ -43,7 +41,6 @@ export const EditWorkspaceForm = ({
 }: EditWorkspaceFormProps) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openResetModal, setOpenResetModal] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
   const { mutate: updateWorkspaceMutation, isPending: isUpdating } =
     useUpdateWorkspace();
   const { mutate: deleteWorkspaceMutation, isPending: isDeleting } =
@@ -54,7 +51,6 @@ export const EditWorkspaceForm = ({
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
       ...initialValues,
-      image: initialValues.imageUrl ?? "",
     },
   });
   const router = useRouter();
@@ -93,24 +89,10 @@ export const EditWorkspaceForm = ({
     const formData = new FormData();
     formData.append("name", values.name!);
 
-    if (values.image instanceof File) {
-      formData.append("image", values.image);
-    }
-
     updateWorkspaceMutation({
       form: formData,
       param: { workspaceId: initialValues.$id },
     });
-  };
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e?.target?.files?.[0];
-
-    if (file) {
-      form.setValue("image", file);
-    } else {
-      console.error("No file selected");
-    }
   };
 
   return (
@@ -172,78 +154,6 @@ export const EditWorkspaceForm = ({
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                  )}
-                />
-                <FormField
-                  name="image"
-                  control={form.control}
-                  render={({ field }) => (
-                    <div className="flex flex-col gap-y-2">
-                      <div className="flex items-center gap-x-5">
-                        {field.value ? (
-                          <div className="size-[72px] relative rounded-md overflow-hidden">
-                            <Image
-                              src={
-                                field.value instanceof File
-                                  ? URL.createObjectURL(field.value)
-                                  : field.value
-                              }
-                              alt={"logo"}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <Avatar className="size-[72px]">
-                            <AvatarFallback className="bg-neutral-200 text-xl text-neutral-500 flex items-center justify-center font-medium">
-                              <ImageIcon className="size-[36px] text-neutral-400" />
-                            </AvatarFallback>
-                          </Avatar>
-                        )}
-                        <div className="flex flex-col">
-                          <p className="text-sm">Workspace Icon</p>
-                          <p className="text-sm text-muted-foreground">
-                            JPG, PNG, SVG or JPEG, max 1MB
-                          </p>
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept=".png, .jpg, .svg, .jpeg"
-                            ref={inputRef}
-                            disabled={isUpdating || isDeleting}
-                            onChange={handleImageChange}
-                          />
-                          {!field.value ? (
-                            <Button
-                              variant={"tertiary"}
-                              size={"xs"}
-                              type="button"
-                              disabled={isUpdating || isDeleting}
-                              className="w-fit mt-2"
-                              onClick={() => inputRef?.current?.click()}
-                            >
-                              Upload Image
-                            </Button>
-                          ) : (
-                            <Button
-                              variant={"destructive"}
-                              size={"xs"}
-                              type="button"
-                              disabled={isUpdating || isDeleting}
-                              className="w-fit mt-2"
-                              onClick={() => {
-                                field.onChange(null);
-                                if (inputRef.current) {
-                                  inputRef.current.value = "";
-                                }
-                              }}
-                            >
-                              Remove Image
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
                   )}
                 />
               </div>

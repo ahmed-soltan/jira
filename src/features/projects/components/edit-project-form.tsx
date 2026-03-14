@@ -2,11 +2,10 @@
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { ArrowLeft, ImageIcon, Loader } from "lucide-react";
-import { ChangeEvent, useRef, useState } from "react";
+import { ArrowLeft, Loader } from "lucide-react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DottedSeparator } from "@/components/dotted-separator";
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ConfirmModal } from "@/components/confirm-modal";
 
 import { updateProjectSchema } from "../schemas";
@@ -40,7 +38,6 @@ export const EditProjectForm = ({
   initialValues,
 }: EditProjectFormProps) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const { mutate: updateProjectMutation, isPending: isUpdating } =
@@ -52,7 +49,6 @@ export const EditProjectForm = ({
     resolver: zodResolver(updateProjectSchema),
     defaultValues: {
       ...initialValues,
-      image: initialValues.imageUrl ?? "",
     },
   });
 
@@ -71,26 +67,12 @@ export const EditProjectForm = ({
     const formData = new FormData();
     formData.append("name", values.name!);
 
-    if (values.image instanceof File) {
-      formData.append("image", values.image);
-    } else if (values.image === undefined || values.image === null) {
-      formData.append("image", "");
-    }
-
     updateProjectMutation({
       form: formData,
       param: { projectId: initialValues.$id },
     });
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e?.target?.files?.[0];
-    if (file) {
-      form.setValue("image", file);
-    } else {
-      form.setValue("image", undefined);
-    }
-  };
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -148,80 +130,7 @@ export const EditProjectForm = ({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  name="image"
-                  control={form.control}
-                  render={({ field }) => (
-                    <div className="flex flex-col gap-y-2">
-                      <div className="flex items-center gap-x-5">
-                        {field.value ? (
-                          <div className="size-[72px] relative rounded-md overflow-hidden">
-                            <Image
-                              src={
-                                field.value instanceof File
-                                  ? URL.createObjectURL(field.value)
-                                  : field.value
-                              }
-                              alt={"logo"}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <Avatar className="size-[72px]">
-                            <AvatarFallback className="bg-neutral-200 text-xl text-neutral-500 flex items-center justify-center font-medium">
-                              <ImageIcon className="size-[36px] text-neutral-400" />
-                            </AvatarFallback>
-                          </Avatar>
-                        )}
-                        <div className="flex flex-col">
-                          <p className="text-sm">Project Icon</p>
-                          <p className="text-sm text-muted-foreground">
-                            JPG, PNG, SVG or JPEG, max 1MB
-                          </p>
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept=".png, .jpg, .svg, .jpeg"
-                            ref={inputRef}
-                            disabled={isUpdating || isDeleting}
-                            onChange={handleImageChange}
-                          />
-                          {!field.value ? (
-                            <Button
-                              variant={"tertiary"}
-                              size={"xs"}
-                              type="button"
-                              disabled={isUpdating || isDeleting}
-                              className="w-fit mt-2"
-                              onClick={() => inputRef?.current?.click()}
-                            >
-                              Upload Image
-                            </Button>
-                          ) : (
-                            <Button
-                              variant={"destructive"}
-                              size={"xs"}
-                              type="button"
-                              disabled={isUpdating || isDeleting}
-                              className="w-fit mt-2"
-                              onClick={() => {
-                                field.onChange(null);
-                                if (inputRef.current) {
-                                  inputRef.current.value = "";
-                                }
-                                form.setValue("image", undefined);
-                                form.trigger("image");
-                              }}
-                            >
-                              Remove Image
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                />
+
               </div>
               <DottedSeparator className="py-7" />
               <div className="flex items-center justify-between flex-wrap-reverse gap-3">

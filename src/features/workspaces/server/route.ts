@@ -5,7 +5,6 @@ import { zValidator } from "@hono/zod-validator";
 
 import {
   DATABASE_ID,
-  IMAGES_BUCKET_ID,
   WORKSPACES_ID,
   MEMBERS_ID,
   TASKS_ID,
@@ -44,12 +43,10 @@ const app = new Hono()
   })
   .patch("/:workspaceId", sessionMiddleware, async (c) => {
     const databases = c.get("databases");
-    const storage = c.get("storage");
     const user = c.get("user");
 
     const formData = await c.req.formData();
     const name = formData.get("name") as string;
-    const imageBlob = formData.get("image") as Blob;
 
     const { workspaceId } = c.req.param();
 
@@ -63,30 +60,6 @@ const app = new Hono()
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    let uploadedImageUrl: string | undefined;
-    if (imageBlob) {
-      const image = new File([imageBlob], "uploaded-image.jpg", {
-        type: imageBlob.type,
-      });
-
-      const uploadedFile = await storage.createFile(
-        IMAGES_BUCKET_ID,
-        ID.unique(),
-        image
-      );
-
-      const arrayBuffer = await storage.getFilePreview(
-        IMAGES_BUCKET_ID,
-        uploadedFile.$id
-      );
-
-      uploadedImageUrl = `data:image/png;base64,${Buffer.from(
-        arrayBuffer
-      ).toString("base64")}`;
-    } else {
-      uploadedImageUrl = imageBlob;
-    }
-
     const workspace = await databases.updateDocument(
       DATABASE_ID,
       WORKSPACES_ID,
@@ -94,7 +67,6 @@ const app = new Hono()
       {
         name,
         userId: user.$id,
-        imageUrl: uploadedImageUrl,
         inviteCode: generateInviteCode(10),
       }
     );
@@ -110,36 +82,10 @@ const app = new Hono()
   .post("/", sessionMiddleware, async (c) => {
     try {
       const databases = c.get("databases");
-      const storage = c.get("storage");
       const user = c.get("user");
 
       const formData = await c.req.formData();
       const name = formData.get("name") as string;
-      const imageBlob = formData.get("image") as Blob;
-
-      let uploadedImageUrl: string | undefined;
-      if (imageBlob) {
-        const image = new File([imageBlob], "uploaded-image.jpg", {
-          type: imageBlob.type,
-        });
-
-        const uploadedFile = await storage.createFile(
-          IMAGES_BUCKET_ID,
-          ID.unique(),
-          image
-        );
-
-        const arrayBuffer = await storage.getFilePreview(
-          IMAGES_BUCKET_ID,
-          uploadedFile.$id
-        );
-
-        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
-          arrayBuffer
-        ).toString("base64")}`;
-      } else {
-        uploadedImageUrl = imageBlob;
-      }
 
       const workspace = await databases.createDocument(
         DATABASE_ID,
@@ -148,7 +94,6 @@ const app = new Hono()
         {
           name,
           userId: user.$id,
-          imageUrl: uploadedImageUrl,
           inviteCode: generateInviteCode(10),
         }
       );
